@@ -1,4 +1,5 @@
 class Admin::CategoriesController < ApplicationController
+  before_filter :admin_auth
 
   def index
     @category = Category.all
@@ -15,6 +16,14 @@ class Admin::CategoriesController < ApplicationController
       redirect_to [:admin, :categories], notice: 'Product created!'
     else
       render :new
+    end
+  end
+
+  protected
+
+  def admin_auth
+    authenticate_or_request_with_http_basic do |username, password|
+      username == ENV['ADMIN_NAME'] && password == ENV['ADMIN_PASSWORD']
     end
   end
 
